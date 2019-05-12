@@ -11,7 +11,7 @@ public class Command {
         if(command.contains(";")) {
             cmd = command.substring(0, command.indexOf(';'));
             if (command.contains("|")) {
-                for (String sub : command.substring(command.indexOf(";")).split("|")) {
+                for (String sub : command.substring(command.indexOf(";") + 1).split("\\|")) {
                     subs.add(sub);
                 }
             } else {
@@ -51,7 +51,7 @@ public class Command {
         builder.append(cmd + ";");
 
         for (String sub: subs) {
-            builder.append(sub);
+            builder.append(sub + "|");
         }
 
         return builder.toString();
