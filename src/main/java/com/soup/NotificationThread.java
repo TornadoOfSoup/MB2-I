@@ -13,7 +13,8 @@ public class NotificationThread extends JFrame implements Runnable {
     long timeLength = 100;
     JLabel timerLabel = new JLabel("time");
     JProgressBar progressBar;
-    static int aliveCount = 0;
+    private static int aliveCount = 0;
+    private static int notificationPadding = 5;
 
     public NotificationThread (String header, String message, long timeLength) {
         aliveCount++;
@@ -30,7 +31,7 @@ public class NotificationThread extends JFrame implements Runnable {
         int x = (int) screenSize.getMaxX() - getWidth();
         int y = (int) screenSize.getMaxY() - getHeight() - taskBarHeight;
 
-        setLocation(x, y - ((getHeight() + 5) * (aliveCount - 1)));
+        setLocation(x, y - ((getHeight() + notificationPadding) * (aliveCount - 1)));
 
         this.message = message;
         this.header = header;
@@ -132,4 +133,13 @@ public class NotificationThread extends JFrame implements Runnable {
             thread.start();
         }
     }
+
+    public static void setNotificationPadding(int padding) {
+        notificationPadding = padding;
+    }
+
+    public static int getNotificationPadding() {
+        return notificationPadding;
+    }
+
 }
