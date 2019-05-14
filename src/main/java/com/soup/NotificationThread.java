@@ -1,8 +1,10 @@
 package com.soup;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 
 public class NotificationThread extends JFrame implements Runnable {
 
@@ -21,6 +23,9 @@ public class NotificationThread extends JFrame implements Runnable {
         setSize(300, 125);
         setLayout(new GridBagLayout());
         setUndecorated(true);
+        Font font = new Font("Consolas", Font.PLAIN, 14);
+
+        getContentPane().setBackground(new Color(20, 20, 20));
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
@@ -48,6 +53,8 @@ public class NotificationThread extends JFrame implements Runnable {
 
         JLabel headingLabel = new JLabel(header);
         headingLabel.setOpaque(false);
+        headingLabel.setFont(font.deriveFont(Font.BOLD));
+        headingLabel.setForeground(new Color(200, 200, 150));
         add(headingLabel, constraints);
 
         constraints.gridx++;
@@ -75,6 +82,8 @@ public class NotificationThread extends JFrame implements Runnable {
         constraints.fill = GridBagConstraints.BOTH;
 
         JLabel messageLabel = new JLabel("<html>" + message + "</html>");
+        messageLabel.setForeground(new Color(200, 200, 150));
+        messageLabel.setFont(font);
         add(messageLabel, constraints);
 
         constraints.gridy++;
@@ -83,6 +92,22 @@ public class NotificationThread extends JFrame implements Runnable {
         //add(timerLabel, constraints);
 
         progressBar = new JProgressBar(0, (int)timeLength);
+        progressBar.setStringPainted(true);
+        progressBar.setBackground(new Color(160, 160, 160));
+        progressBar.setForeground(new Color(100, 150, 100));
+        progressBar.setUI(new BasicProgressBarUI() {
+            @Override
+            protected Color getSelectionBackground() {
+                return new Color(170, 50, 50); //funny red color
+            }
+
+            @Override
+            protected Color getSelectionForeground() {
+                return Color.DARK_GRAY;
+            }
+        });
+        progressBar.setFont(font);
+
         add(progressBar, constraints);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -95,7 +120,6 @@ public class NotificationThread extends JFrame implements Runnable {
         setAlwaysOnTop(true);
 
         initTime = System.currentTimeMillis();
-        progressBar.setStringPainted(true);
         while (initTime + timeLength - System.currentTimeMillis() > 0) {
             progressBar.setValue((int)(initTime + timeLength - System.currentTimeMillis()));
 
